@@ -28,18 +28,23 @@ namespace AppManagerGUI
         public AppManagerForm()
         {
             InitializeComponent();
-            // Initializes a new App Manager object.
+            // Add a new column to the Views.
+            PriorityQueueView.Columns.Add("File Name", -2);
+            PriorityQueuePriorityView.Columns.Add("ID", -2);
 
+            // Initializes a new App Manager object.
             try
             {
                 appManager = appManager.LoadManager();
             }
+            // If App Manager was not detected, save a new AppManager at the programs' bin.
             catch (Exception)
             {
                 MessageBox.Show("An App Manager Json was not detected. Creating a new App Manager in the program's exe.", "App Manager Not Located");
                 appManager.SaveManager();
             }
 
+            // Reload the views in order to display the lists.
             PriorityQueueViewReload();
             LinkedListViewReload();
         }
@@ -114,7 +119,7 @@ namespace AppManagerGUI
             }
 
             // Parses priority into int. If valid, ensure that priority is not negative and below 9999.
-            if(int.TryParse(PriorityQueueBoundingBox.Text, out priorityFromBox))
+            if (int.TryParse(PriorityQueueBoundingBox.Text, out priorityFromBox))
             {
                 if (priorityFromBox < 0)
                 {
@@ -144,10 +149,14 @@ namespace AppManagerGUI
             }
         }
 
+        /// <summary>
+        /// Double clicking an item will call a specified document's OpenDocument() function.
+        /// </summary>
         private void PriorityQueueView_DoubleClick(object sender, EventArgs e)
         {
-
-            MessageBox.Show(PriorityQueueView.SelectedItems[0].SubItems[0].Text);
+            int selectedIndex = PriorityQueueView.SelectedItems[0].Index;
+            Document document = appManager.IncompletedDocuments.Items.ElementAt(selectedIndex).Value;
+            document.OpenDocument();
         }
 
         private void LinkedListDelete_Click(object sender, EventArgs e)
@@ -163,6 +172,14 @@ namespace AppManagerGUI
         private void PriorityQueueViewLabel_Click(object sender, EventArgs e)
         {
 
+        }
+
+        /// <summary>
+        /// Calls the App Manager's Save Function in order to save to a json.
+        /// </summary>
+        private void SaveManagerButton_Click(object sender, EventArgs e)
+        {
+            appManager.SaveManager();
         }
     }
 }

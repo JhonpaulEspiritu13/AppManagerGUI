@@ -61,6 +61,7 @@ namespace AppManagerGUI
             PriorityViewWarningLabel = new Label();
             PriorityQueueBoundingLabel = new Label();
             PriorityQueueBoundingBox = new TextBox();
+            SaveManagerButton = new Button();
             SuspendLayout();
             // 
             // PriorityQueueDelete
@@ -148,26 +149,31 @@ namespace AppManagerGUI
             // 
             PriorityQueueView.Alignment = ListViewAlignment.Left;
             PriorityQueueView.AutoArrange = false;
+            PriorityQueueView.FullRowSelect = true;
+            PriorityQueueView.GridLines = true;
             PriorityQueueView.LabelWrap = false;
             PriorityQueueView.Location = new Point(12, 37);
             PriorityQueueView.MultiSelect = false;
             PriorityQueueView.Name = "PriorityQueueView";
             PriorityQueueView.Size = new Size(223, 341);
             PriorityQueueView.TabIndex = 7;
-            PriorityQueueView.DoubleClick += PriorityQueueView_DoubleClick;
             PriorityQueueView.UseCompatibleStateImageBehavior = false;
+            PriorityQueueView.View = View.Details;
+            PriorityQueueView.DoubleClick += PriorityQueueView_DoubleClick;
             // 
             // PriorityQueuePriorityView
             // 
-            PriorityQueuePriorityView.Location = new Point(241, 37);
             PriorityQueuePriorityView.AutoArrange = false;
+            PriorityQueuePriorityView.FullRowSelect = true;
+            PriorityQueuePriorityView.GridLines = true;
             PriorityQueuePriorityView.LabelWrap = false;
+            PriorityQueuePriorityView.Location = new Point(241, 37);
             PriorityQueuePriorityView.MultiSelect = false;
-            PriorityQueuePriorityView.Scrollable = false;
             PriorityQueuePriorityView.Name = "PriorityQueuePriorityView";
             PriorityQueuePriorityView.Size = new Size(42, 341);
             PriorityQueuePriorityView.TabIndex = 7;
             PriorityQueuePriorityView.UseCompatibleStateImageBehavior = false;
+            PriorityQueuePriorityView.View = View.Details;
             // 
             // PriorityQueueViewLabel
             // 
@@ -214,11 +220,27 @@ namespace AppManagerGUI
             PriorityQueueBoundingBox.Size = new Size(118, 23);
             PriorityQueueBoundingBox.TabIndex = 13;
             // 
+            // SaveManagerButton
+            // 
+            SaveManagerButton.BackColor = Color.MediumSeaGreen;
+            SaveManagerButton.FlatAppearance.BorderColor = Color.Black;
+            SaveManagerButton.FlatAppearance.BorderSize = 5;
+            SaveManagerButton.FlatStyle = FlatStyle.Popup;
+            SaveManagerButton.Font = new Font("Segoe UI", 15F);
+            SaveManagerButton.Location = new Point(449, 445);
+            SaveManagerButton.Name = "SaveManagerButton";
+            SaveManagerButton.Size = new Size(118, 39);
+            SaveManagerButton.TabIndex = 14;
+            SaveManagerButton.Text = "Save";
+            SaveManagerButton.UseVisualStyleBackColor = false;
+            SaveManagerButton.Click += SaveManagerButton_Click;
+            // 
             // AppManagerForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(652, 498);
+            Controls.Add(SaveManagerButton);
             Controls.Add(PriorityQueueBoundingBox);
             Controls.Add(PriorityQueueBoundingLabel);
             Controls.Add(PriorityViewWarningLabel);
@@ -253,5 +275,6 @@ namespace AppManagerGUI
         private Label PriorityViewWarningLabel;
         private Label PriorityQueueBoundingLabel;
         private TextBox PriorityQueueBoundingBox;
+        private Button SaveManagerButton;
     }
 }

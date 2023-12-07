@@ -99,14 +99,19 @@ namespace AppManagerGUI
         /// <summary>
         /// Launches the document's file path.
         /// </summary>
-        /// <exception cref="Exception"></exception>
         public void OpenDocument()
         {
             if (!IsValid())
             {
                 throw new Exception("File could not be opened.");
             }
-            Process.Start(filePath);
+            // Launch files with the default windows application.
+            // Code derived from: https://stackoverflow.com/questions/69058894/open-file-with-windows-default-application
+            // Uses only necessary arguments in order to start file.
+            ProcessStartInfo processStartInfo = new ProcessStartInfo();
+            processStartInfo.FileName = filePath;
+            processStartInfo.UseShellExecute = true;
+            Process.Start(processStartInfo);
         }
     }
 }
