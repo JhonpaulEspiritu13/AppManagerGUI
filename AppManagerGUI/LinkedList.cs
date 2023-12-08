@@ -310,12 +310,12 @@ namespace AppManagerGUI
             if (left.ReferenceValue <= right.ReferenceValue)
             {
                 result = left;
-                left.Next = SortedMerge(left.Next, right.Next);
+                left.Next = SortedMerge(left.Next!, right.Next!);
             }
             else
             {
                 result = right;
-                right.Next = SortedMerge(left, right.Next);
+                right.Next = SortedMerge(left, right.Next!);
             }
 
             return result;
@@ -348,7 +348,7 @@ namespace AppManagerGUI
         /// </summary>
         /// <param name="node">Head node, or the next node to be merge sorted.</param>
         /// <returns>A linked list node value with the sorted list.</returns>
-        public LinkedListNode<T> MergeSort(LinkedListNode<T> node)
+        public LinkedListNode<T>? MergeSort(LinkedListNode<T> node)
         {
             // Checks if the head node is either null, or alone.
             if (node == null || node.Next == null)
@@ -357,14 +357,15 @@ namespace AppManagerGUI
             }
 
             // Splits the list into two halves by getting the middle first..
-            LinkedListNode<T> middle = GetMiddle(node);
-            LinkedListNode<T> middleNext = middle.Next;
+            LinkedListNode<T> middle = GetMiddle(node)!;
+            LinkedListNode<T> middleNext = middle.Next!;
             middle.Next = null;
 
             // Calls a MergeSort to check the two halves of the List.
-            LinkedListNode<T> left = MergeSort(node);
-            LinkedListNode<T> right = MergeSort(middleNext);
+            LinkedListNode<T> left = MergeSort(node)!;
+            LinkedListNode<T> right = MergeSort(middleNext)!;
 
+            // Start the Sorted Merge
             LinkedListNode<T> sortedList = SortedMerge(left, right);
             return sortedList;
         }

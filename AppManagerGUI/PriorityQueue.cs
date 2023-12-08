@@ -116,8 +116,8 @@ namespace AppManagerGUI
             // Else, it goes through different checkpoints to sort throughout the list.
             else
             {
-                // Initializes the first ListNode to compare values.
-                Generic.LinkedListNode<PriorityQueueItem<T>> listNode = _items.First;
+                // Initializes the first ListNode to compare values. Cannot be null due to checking first item.
+                Generic.LinkedListNode<PriorityQueueItem<T>> listNode = _items.First!;
 
                 // If item's priority is higher than the first list priority, insert it first.
                 if (item.Priority > listNode.Value.Priority)
@@ -155,9 +155,10 @@ namespace AppManagerGUI
         {
             if (Empty())
             {
-                throw new Exception("Priority Queue is empty.");
+                throw new PriorityQueueEmptyException();
             }
-            PriorityQueueItem<T> item = _items.First.Value;
+            // Cannot be null due to checking first item.
+            PriorityQueueItem<T> item = _items.First!.Value;
             return item.Value;
         }
 
@@ -170,10 +171,10 @@ namespace AppManagerGUI
         {
             if (Empty())
             {
-                throw new Exception("Priority Queue is empty.");
+                throw new PriorityQueueEmptyException();
             }
-
-            PriorityQueueItem<T> item = _items.First.Value;
+            // // Cannot be null due to checking first item.
+            PriorityQueueItem<T> item = _items.First!.Value;
             _items.RemoveFirst();
             return item;
         }
@@ -238,7 +239,8 @@ namespace AppManagerGUI
             string returnString = "";
             foreach (var item in _items)
             {
-                returnString += item.Value.ToString() + "\n";
+                // For this program's intents, the Document object won't be null.
+                returnString += item.Value!.ToString() + "\n";
             }
             return returnString;
         }
@@ -257,8 +259,8 @@ namespace AppManagerGUI
             }
             catch (Exception)
             {
-
-                value = default(T);
+                // Default value of 'Document' object will not be null.
+                value = default(T)!;
                 return false;
             }
         }
@@ -277,7 +279,8 @@ namespace AppManagerGUI
             }
             catch (Exception)
             {
-                value = default(T);
+                // Default value of 'Document' object will not be null.
+                value = default(T)!;
                 return false;
             }
         }
