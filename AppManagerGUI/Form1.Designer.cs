@@ -62,6 +62,7 @@ namespace AppManagerGUI
             PriorityQueueBoundingLabel = new Label();
             PriorityQueueBoundingBox = new TextBox();
             SaveManagerButton = new Button();
+            LinkedListViewLabel = new Label();
             SuspendLayout();
             // 
             // PriorityQueueDelete
@@ -96,11 +97,18 @@ namespace AppManagerGUI
             // 
             // LinkedListView
             // 
-            LinkedListView.Location = new Point(369, 12);
+            LinkedListView.AutoArrange = false;
+            LinkedListView.FullRowSelect = true;
+            LinkedListView.GridLines = true;
+            LinkedListView.LabelWrap = false;
+            LinkedListView.MultiSelect = false;
+            LinkedListView.Location = new Point(369, 37);
             LinkedListView.Name = "LinkedListView";
-            LinkedListView.Size = new Size(271, 366);
+            LinkedListView.Size = new Size(271, 341);
             LinkedListView.TabIndex = 3;
+            LinkedListView.View = View.Details;
             LinkedListView.UseCompatibleStateImageBehavior = false;
+            LinkedListView.DoubleClick += LinkedListView_DoubleClick;
             // 
             // LinkedListDelete
             // 
@@ -179,11 +187,11 @@ namespace AppManagerGUI
             // 
             PriorityQueueViewLabel.AutoSize = true;
             PriorityQueueViewLabel.Font = new Font("Segoe UI", 15F);
-            PriorityQueueViewLabel.Location = new Point(41, 2);
+            PriorityQueueViewLabel.Location = new Point(18, 2);
             PriorityQueueViewLabel.Name = "PriorityQueueViewLabel";
-            PriorityQueueViewLabel.Size = new Size(172, 28);
+            PriorityQueueViewLabel.Size = new Size(214, 28);
             PriorityQueueViewLabel.TabIndex = 9;
-            PriorityQueueViewLabel.Text = "Priority Queue List";
+            PriorityQueueViewLabel.Text = "Incomplete Documents";
             PriorityQueueViewLabel.Click += PriorityQueueViewLabel_Click;
             // 
             // PriorityQueuePriorityLabel
@@ -235,11 +243,22 @@ namespace AppManagerGUI
             SaveManagerButton.UseVisualStyleBackColor = false;
             SaveManagerButton.Click += SaveManagerButton_Click;
             // 
+            // LinkedListViewLabel
+            // 
+            LinkedListViewLabel.AutoSize = true;
+            LinkedListViewLabel.Font = new Font("Segoe UI", 15F);
+            LinkedListViewLabel.Location = new Point(394, 2);
+            LinkedListViewLabel.Name = "LinkedListViewLabel";
+            LinkedListViewLabel.Size = new Size(213, 28);
+            LinkedListViewLabel.TabIndex = 15;
+            LinkedListViewLabel.Text = "Completed Documents";
+            // 
             // AppManagerForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(652, 498);
+            Controls.Add(LinkedListViewLabel);
             Controls.Add(SaveManagerButton);
             Controls.Add(PriorityQueueBoundingBox);
             Controls.Add(PriorityQueueBoundingLabel);
@@ -276,5 +295,6 @@ namespace AppManagerGUI
         private Label PriorityQueueBoundingLabel;
         private TextBox PriorityQueueBoundingBox;
         private Button SaveManagerButton;
+        private Label LinkedListViewLabel;
     }
 }

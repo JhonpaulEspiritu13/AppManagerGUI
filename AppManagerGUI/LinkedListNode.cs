@@ -27,9 +27,9 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace AppManagerGUI.LinkedList
+namespace AppManagerGUI
 {
-    public class LinkedListNode<T>
+    public class LinkedListNode<T> 
     {
         /**************************************************************
         * Class Variables
@@ -38,7 +38,7 @@ namespace AppManagerGUI.LinkedList
         /// <summary>
         /// The generic object value of the node.
         /// </summary>
-        public T? Value { get; set; }
+        public T Value { get; set; }
 
         /// <summary>
         /// The next node in a Linked List.
@@ -56,9 +56,16 @@ namespace AppManagerGUI.LinkedList
         ***************************************************************/
 
         /// <summary>
-        /// Creates an empty LinkedListNode object.
+        /// Creates a new LinkedListNode object with a value (no next pointer).
         /// </summary>
-        public LinkedListNode() { }
+        /// <param name="value">Value to be inserted into the node.</param>
+        /// <param name="referenceValue">Ref. Value to be added onto the node.</param>
+        public LinkedListNode(T value, int referenceValue)
+        {
+            Value = value;
+            Next = null;
+            ReferenceValue = referenceValue;
+        }
 
         /// <summary>
         /// Creates a new LinkedListNode object with a value.

@@ -26,9 +26,10 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.IO;
-// Used different namespaces for the Data Structures for easier customization.
-using LinkedLister = AppManagerGUI.LinkedList;
-using AppManagerGUI.PriorityQueue;
+// Used different namespaces for the Data Structures to differentiate from System.Collections
+using LinkedList = AppManagerGUI.LinkedList<AppManagerGUI.Document>;
+using PriorityQueue = AppManagerGUI.PriorityQueue<AppManagerGUI.Document>;
+using System.Reflection.Metadata;
 
 namespace AppManagerGUI
 {
@@ -41,7 +42,7 @@ namespace AppManagerGUI
         private JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
         private string appManagerPath;
         PriorityQueue<Document> documentsInQueue = new PriorityQueue<Document>();
-        LinkedLister.LinkedList<Document> documentsInList = new LinkedLister.LinkedList<Document>();
+        LinkedList<Document> documentsInList = new LinkedList<Document>();
 
         /**************************************************************
         * Constructor
@@ -64,7 +65,7 @@ namespace AppManagerGUI
         /// <param name="incompletedDocuments"></param>
         /// <param name="completedDocuments"></param>
         [JsonConstructor]
-        public AppManager(string managerPath, PriorityQueue<Document> incompletedDocuments, LinkedLister.LinkedList<Document> completedDocuments) =>
+        public AppManager(string managerPath, PriorityQueue<Document> incompletedDocuments, LinkedList<Document> completedDocuments) =>
             (appManagerPath, documentsInQueue, documentsInList) = (managerPath, incompletedDocuments, completedDocuments);
 
         /**************************************************************
@@ -90,7 +91,7 @@ namespace AppManagerGUI
         /// <summary>
         /// All documents stored in the linked list (completed documents).
         /// </summary>
-        public LinkedLister.LinkedList<Document> CompletedDocuments
+        public LinkedList<Document> CompletedDocuments
         {
             get { return documentsInList; }
         }
@@ -126,7 +127,7 @@ namespace AppManagerGUI
         /// <returns>New App Manager object created from string.</returns>
         public AppManager DeserializeManager(string deserializeObject)
         {
-            return JsonSerializer.Deserialize<AppManager>(deserializeObject);
+            return JsonSerializer.Deserialize<AppManager>(deserializeObject) ?? throw new Exception("Manager was unable to be deserialized");
         }
 
         /// <summary>
@@ -189,6 +190,16 @@ namespace AppManagerGUI
             documentsInQueue.Clear();
         }
 
+        /// <summary>
+        /// Finds a Document at a certain index in the Incompleted Documents List (Priority Queue).
+        /// </summary>
+        /// <param name="indexToFind">Index to search for.</param>
+        /// <returns>Document object.</returns>
+        public Document PriorityGetDocument(int indexToFind)
+        {
+            return IncompletedDocuments.Items.ElementAt(indexToFind).Value;
+        }
+
         /**************************************************************
         * Class Functions - Linked List
         ***************************************************************/
@@ -208,6 +219,24 @@ namespace AppManagerGUI
         public void Clear()
         {
             documentsInList.Clear();
+        }
+
+        /// <summary>
+        /// Finds a Document at a certain index in the Completed Documents List (Linked List).
+        /// </summary>
+        /// <param name="indexToFind">Index to search for.</param>
+        /// <returns>Document object.</returns>
+        public Document LinkedGetDocument(int indexToFind)
+        {
+            return CompletedDocuments.FindAtIndex(indexToFind);
+        }
+
+        /// <summary>
+        /// Calls the LinkedList's Sort method, and 
+        /// </summary>
+        public void MergeSort()
+        {
+            documentsInList = new LinkedList<Document>(documentsInList.MergeSort(documentsInList.Head));
         }
     }
 }

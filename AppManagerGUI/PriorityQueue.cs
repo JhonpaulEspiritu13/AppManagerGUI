@@ -20,14 +20,16 @@
 // I used my priority queue from my Assignment because it has a function I want to use.
 
 using System;
-using System.Collections.Generic;
+// Had to specify name due to me wanting to preserve the LinkedList structure my original assignment used.
+using Generic = System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Diagnostics.CodeAnalysis;
 
-namespace AppManagerGUI.PriorityQueue
+namespace AppManagerGUI
 {
     public class PriorityQueue<T>
     {
@@ -35,7 +37,7 @@ namespace AppManagerGUI.PriorityQueue
         * Class Variables
         ***************************************************************/
 
-        private LinkedList<PriorityQueueItem<T>> _items;
+        private Generic.LinkedList<PriorityQueueItem<T>> _items;
 
         /**************************************************************
         * Constructor
@@ -46,7 +48,7 @@ namespace AppManagerGUI.PriorityQueue
         /// </summary>
         public PriorityQueue()
         {
-            _items = new LinkedList<PriorityQueueItem<T>>();
+            _items = new Generic.LinkedList<PriorityQueueItem<T>>();
         }
 
         /// <summary>
@@ -55,7 +57,7 @@ namespace AppManagerGUI.PriorityQueue
         /// </summary>
         /// <param name="items">Linked List of PriorityQueueItems.</param>
         [JsonConstructor]
-        public PriorityQueue(LinkedList<PriorityQueueItem<T>> items)
+        public PriorityQueue(Generic.LinkedList<PriorityQueueItem<T>> items)
         {
             _items = items;
         }
@@ -67,7 +69,7 @@ namespace AppManagerGUI.PriorityQueue
         /// <summary>
         /// PriorityQueueItems currently in the Priority Queue.
         /// </summary>
-        public LinkedList<PriorityQueueItem<T>> Items
+        public Generic.LinkedList<PriorityQueueItem<T>> Items
         {
             get { return _items; }
         }
@@ -103,7 +105,7 @@ namespace AppManagerGUI.PriorityQueue
         public void Enqueue(T value, int priority)
         {
             // Initializes the PriorityQueueItem for inserted value.
-            PriorityQueueItem<T> item = new PriorityQueueItem<T> { Value = value, Priority = priority };
+            PriorityQueueItem<T> item = new PriorityQueueItem<T>(value, priority);
 
             // If Queue is empty, make the item the highest priority and the first item.
             if (Empty())
@@ -115,7 +117,7 @@ namespace AppManagerGUI.PriorityQueue
             else
             {
                 // Initializes the first ListNode to compare values.
-                LinkedListNode<PriorityQueueItem<T>> listNode = _items.First;
+                Generic.LinkedListNode<PriorityQueueItem<T>> listNode = _items.First;
 
                 // If item's priority is higher than the first list priority, insert it first.
                 if (item.Priority > listNode.Value.Priority)
@@ -255,6 +257,7 @@ namespace AppManagerGUI.PriorityQueue
             }
             catch (Exception)
             {
+
                 value = default(T);
                 return false;
             }

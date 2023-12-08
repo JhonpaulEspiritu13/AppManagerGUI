@@ -17,8 +17,6 @@
 * to my program.
 ***************************************************************/
 
-using AppManagerGUI.PriorityQueue;
-
 namespace AppManagerGUI
 {
     public partial class AppManagerForm : Form
@@ -30,7 +28,10 @@ namespace AppManagerGUI
             InitializeComponent();
             // Add a new column to the Views.
             PriorityQueueView.Columns.Add("File Name", -2);
+            PriorityQueueView.Columns.Add("File Path", -2);
             PriorityQueuePriorityView.Columns.Add("ID", -2);
+            LinkedListView.Columns.Add("File Name", -2);
+            LinkedListView.Columns.Add("File Path", -2);
 
             // Initializes a new App Manager object.
             try
@@ -59,11 +60,15 @@ namespace AppManagerGUI
         /// </summary>
         private void PriorityQueueViewReload()
         {
+            // Clears both Priority Queue Views.
             PriorityQueueView.Items.Clear();
             PriorityQueuePriorityView.Items.Clear();
+
+            // Then adds all Priority Queue items to the views.
             foreach (PriorityQueueItem<Document> d in appManager.IncompletedDocuments.Items)
             {
-                PriorityQueueView.Items.Add(d.Value.FileName);
+                ListViewItem newListItem = new ListViewItem(new[] { d.Value.FileName, d.Value.FilePath });
+                PriorityQueueView.Items.Add(newListItem);
                 PriorityQueuePriorityView.Items.Add(d.Priority.ToString());
             }
         }
@@ -73,11 +78,15 @@ namespace AppManagerGUI
         /// </summary>
         private void LinkedListViewReload()
         {
+            // Clears LinkedList view.
             LinkedListView.Items.Clear();
-            AppManagerGUI.LinkedList.LinkedListNode<Document> index = appManager.CompletedDocuments.Head;
+            
+            // Increments through the linked list.
+            LinkedListNode<Document> index = appManager.CompletedDocuments.Head;
             for (int i = 0; i < appManager.CompletedDocuments.Size(); i++)
             {
-                LinkedListView.Items.Add(index.Value.FileName);
+                ListViewItem newListItem = new ListViewItem(new[] { index.Value.FileName, index.Value.FilePath });
+                LinkedListView.Items.Add(newListItem);
                 index = index.Next;
             }
         }
@@ -93,6 +102,7 @@ namespace AppManagerGUI
                 appManager.PopDocument();
                 PriorityQueueViewReload();
                 LinkedListViewReload();
+                MessageBox.Show(appManager.CompletedDocuments.Size().ToString());
             }
             // If an exception pops up, display a message box.
             catch (Exception)
@@ -154,8 +164,19 @@ namespace AppManagerGUI
         /// </summary>
         private void PriorityQueueView_DoubleClick(object sender, EventArgs e)
         {
+            // Gets index of selected item, then finds it in Priority Queue.
             int selectedIndex = PriorityQueueView.SelectedItems[0].Index;
-            Document document = appManager.IncompletedDocuments.Items.ElementAt(selectedIndex).Value;
+            Document document = appManager.PriorityGetDocument(selectedIndex);
+            document.OpenDocument();
+        }
+
+        /// <summary>
+        /// Double clicking an item will call a specified document's OpenDocument() function.
+        /// </summary>
+        private void LinkedListView_DoubleClick(object sender, EventArgs e)
+        {
+            int selectedIndex = LinkedListView.SelectedItems[0].Index;
+            Document document = appManager.LinkedGetDocument(selectedIndex);
             document.OpenDocument();
         }
 
@@ -166,7 +187,9 @@ namespace AppManagerGUI
 
         private void LinkedListSort_Click(object sender, EventArgs e)
         {
-            appManager.CompletedDocuments.MergeSort(appManager.CompletedDocuments.Head);
+            appManager.MergeSort();
+            MessageBox.Show(appManager.CompletedDocuments.Size().ToString());
+            LinkedListViewReload();
         }
 
         private void PriorityQueueViewLabel_Click(object sender, EventArgs e)

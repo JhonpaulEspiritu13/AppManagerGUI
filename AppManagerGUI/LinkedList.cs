@@ -27,7 +27,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace AppManagerGUI.LinkedList
+namespace AppManagerGUI
 {
     public class LinkedList<T>
     {
@@ -61,9 +61,11 @@ namespace AppManagerGUI.LinkedList
         public LinkedList(LinkedListNode<T> head)
         {
             _size = 0;
+            // If head is null, don't do anything but assign a size of zero.
             if (head == null)
                 return;
 
+            // Insert the head node, and iterate through its children. Increment the size for each child.
             Insert(head);
             LinkedListNode<T> index = head;
             while (index.Next != null)
@@ -71,6 +73,8 @@ namespace AppManagerGUI.LinkedList
                 index = index.Next;
                 _size++;
             }
+
+            // Make the current Node the index.
             _current = index;
         }
 
@@ -79,7 +83,7 @@ namespace AppManagerGUI.LinkedList
         ***************************************************************/
 
         /// <summary>
-        /// Head of the LinkedList.
+        /// Head of the LinkedList. Possibly null.
         /// </summary>
         public LinkedListNode<T>? Head
         {
@@ -96,7 +100,7 @@ namespace AppManagerGUI.LinkedList
         /// <returns>Returns true if current size is zero, false if not.</returns>
         public bool Empty()
         {
-            return _size == 0;
+            return _head == null;
         }
 
         /// <summary>
@@ -106,7 +110,7 @@ namespace AppManagerGUI.LinkedList
         /// <param name="referenceValue">Reference value of the new object.</param>
         public void AddLast(T item, int referenceValue)
         {
-            LinkedListNode<T> newNode = new LinkedListNode<T>(item, null, referenceValue);
+            LinkedListNode<T> newNode = new LinkedListNode<T>(item, referenceValue);
             Insert(newNode);
         }
 
@@ -120,18 +124,27 @@ namespace AppManagerGUI.LinkedList
             {
                 // Creates an index, looping through the list.
                 // If index is the same as the item inserted, throw exception.
-                LinkedListNode<T>? index = _head;
+                // Head is *not* null due to check.
+                LinkedListNode<T> index = _head!;
                 for (int i = 1; i < _size; i++)
                 {
                     if (index == item)
                         throw new Exception("Item is already in the list.");
-                    index = index.Next;
+                    index = index.Next!;
                 }
 
-                // Makes inserted object the tail.
-                _current.Next = item;
+                // Makes inserted object the tail and makes its next null.
+                // Current is *not* null due to check.
+                _current!.Next = item;
                 _current = item;
-                _current.Next = null;
+
+                // If there are any nodes connected to the added node, append those nodes to the Linked List as well.
+                index = _current;
+                while (index.Next != null)
+                {
+                    index = index.Next;
+                    _size++;
+                }
             }
             // If there are no items in Linked List, make item the head.
             else
@@ -139,17 +152,19 @@ namespace AppManagerGUI.LinkedList
                 _head = item;
                 _current = _head;
             }
+
+            // Increase size after either if statements.
             _size++;
         }
 
         /// <summary>
-        /// Removes an item from the Linked List, nulling the reference of the previous Node.
+        /// Removes an item from the top of the Linked List, nulling the reference of the previous Node.
         /// </summary>
         public void Remove()
         {
             // If List is empty, throw an exception.
             if (Empty())
-                throw new Exception("Linked List is empty.");
+                throw new LinkedListEmptyException();
             // If removed item is head, null it.
             if (_current == _head)
             {
@@ -161,10 +176,10 @@ namespace AppManagerGUI.LinkedList
             // Creates an index, looping through the list.
             // If the Node object two spots ahead is null, make index the current object
             // and null its Next pointer to remove references.
-            LinkedListNode<T> index = _head;
-            while (!(index.Next.Next == null))
+            LinkedListNode<T> index = _head!;
+            for (int i = 1; i < _size; i++)
             {
-                index = index.Next;
+                index = index.Next!;
             }
             _current = index;
             _current.Next = null;
@@ -179,8 +194,9 @@ namespace AppManagerGUI.LinkedList
         public void Remove(T item)
         {
             if (Empty())
-                throw new Exception("Linked List is empty.");
-            if (_head.Value.Equals(item))
+                throw new LinkedListEmptyException();
+            // For this program's purposes, the value cannot be null. Nor can the head due to check.
+            if (_head!.Value!.Equals(item))
             {
                 _head = null;
                 _size--;
@@ -189,13 +205,14 @@ namespace AppManagerGUI.LinkedList
 
             // Loops through the linked list to find specific element.
             LinkedListNode<T> index = _head;
-            LinkedListNode<T> previous = null;
-            while (!(index.Value.Equals(item)))
+            LinkedListNode<T> previous = index;
+
+            while (!(index.Value!.Equals(item)))
             {
                 // If the next node is null, return an error because the end of the list has been reached.
                 if (index.Next == null)
                 {
-                    throw new Exception("Linked List item is invalid.");
+                    throw new LinkedListEndOfListException();
                 }
                 previous = index;
                 index = index.Next;
@@ -214,25 +231,32 @@ namespace AppManagerGUI.LinkedList
             _size = 0;
         }
 
-        /* -- Assuming that this does not need to be added since there are no Unit Test Requirements for it.
         /// <summary>
-        /// Replaces item in specificed position in the LinkedList array.
+        /// Finds the generic object at a certain index in the Linked List.
         /// </summary>
-        /// <param name="position">Position to replace item in array (Minus one in index conversion)</param>
-        /// <param name="item">Item to replace with.</param>
-        /// <exception cref="LinkedListInvalidPosition">Position specified is invalid.</exception>
-        public void Replace(int position, string item)
+        /// <param name="indexToFind">Index to search for.</param>
+        /// <returns>Generic object.</returns>
+        public T FindAtIndex(int indexToFind)
         {
-            // Checks if position is above zero or below current size.
-            if ((position < 1) || (position > _currentSize))
+            LinkedListNode<T> index;
+            if (Empty())
             {
-                throw new LinkedListInvalidPosition();
+                throw new LinkedListEmptyException();
+            }
+            index = _head!;
+
+            // Iterates through list to find desired index.
+            for (int i = 1; i < indexToFind; i++)
+            {
+                if (index.Next == null)
+                {
+                    throw new LinkedListEndOfListException();
+                }
+                index = index.Next;
             }
 
-            // Position minus one is where item will be replaced.
-            _listArray[position - 1] = item;
+            return index.Value;
         }
-        */
 
         /// <summary>
         /// The current size of the LinkedList.
@@ -250,18 +274,19 @@ namespace AppManagerGUI.LinkedList
         public string Print()
         {
             // Tests if List is empty.
-            if (_head == null)
+            if (Empty())
             {
-                throw new Exception("Linked list is empty.");
+                throw new LinkedListEmptyException();
             }
 
             // Initializes return string by calling Can's ToString().
             string returnString = string.Empty;
-            LinkedListNode<T> index = _head;
+            LinkedListNode<T> index = _head!;
             for (int i = 0; i < _size; i++)
             {
-                returnString += index.ToString() + "\n";
-                index = index.Next;
+                // Indexes should not be null as they are iterating through the size of the list.
+                returnString += index!.Value!.ToString() + "\n";
+                index = index.Next!;
             }
             return returnString;
         }
@@ -296,12 +321,12 @@ namespace AppManagerGUI.LinkedList
             return result;
         }
 
-        LinkedListNode<T> GetMiddle(LinkedListNode<T> node)
+        LinkedListNode<T>? GetMiddle(LinkedListNode<T> node)
         {
             if (node == null)
                 return node;
-            LinkedListNode<T> fastptr = node.Next;
-            LinkedListNode<T> slowptr = node;
+            LinkedListNode<T>? fastptr = node.Next;
+            LinkedListNode<T>? slowptr = node;
 
             // Move fastptr by two and slow ptr by one
             // Finally slowptr will point to middle node
@@ -321,20 +346,22 @@ namespace AppManagerGUI.LinkedList
         /// Preforms a Merge Sort made for a Linked List by preforming a O(n*log n) operation.
         /// Code referenced and modified from: https://www.geeksforgeeks.org/merge-sort-for-linked-list/#
         /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
+        /// <param name="node">Head node, or the next node to be merge sorted.</param>
+        /// <returns>A linked list node value with the sorted list.</returns>
         public LinkedListNode<T> MergeSort(LinkedListNode<T> node)
         {
-            if (Empty() || node.Next == null)
+            // Checks if the head node is either null, or alone.
+            if (node == null || node.Next == null)
             {
                 return node;
             }
 
+            // Splits the list into two halves by getting the middle first..
             LinkedListNode<T> middle = GetMiddle(node);
             LinkedListNode<T> middleNext = middle.Next;
-
             middle.Next = null;
 
+            // Calls a MergeSort to check the two halves of the List.
             LinkedListNode<T> left = MergeSort(node);
             LinkedListNode<T> right = MergeSort(middleNext);
 

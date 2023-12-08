@@ -26,7 +26,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace AppManagerGUI.PriorityQueue
+namespace AppManagerGUI
 {
     public class PriorityQueueItem<T>
     {
@@ -38,7 +38,7 @@ namespace AppManagerGUI.PriorityQueue
         /// <summary>
         /// Item in a Priority Queue, actual value used to return data.
         /// </summary>
-        public T? Value { get; set; }
+        public T Value { get; set; }
 
         [JsonPropertyName("Priority Queue ID")]
         /// <summary>
@@ -49,11 +49,6 @@ namespace AppManagerGUI.PriorityQueue
         /**************************************************************
         * Constructor
         ***************************************************************/
-
-        /// <summary>
-        /// Creates an empty Priority Queue Item object.
-        /// </summary>
-        public PriorityQueueItem() { }
 
         /// <summary>
         /// Creates a Priority Queue Item object with both a value and priority.
