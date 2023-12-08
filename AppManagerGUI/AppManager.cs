@@ -236,7 +236,12 @@ namespace AppManagerGUI
         /// </summary>
         public void MergeSort()
         {
-            documentsInList = new LinkedList<Document>(documentsInList.MergeSort(documentsInList.Head));
+            if (documentsInList.Empty())
+            {
+                throw new LinkedListEmptyException();
+            }
+            // Cannot be null due to check.
+            documentsInList = new LinkedList<Document>(documentsInList.MergeSort(documentsInList.Head!)!);
         }
     }
 }

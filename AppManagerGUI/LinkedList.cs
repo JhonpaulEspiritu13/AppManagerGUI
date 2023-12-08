@@ -126,7 +126,7 @@ namespace AppManagerGUI
                 // If index is the same as the item inserted, throw exception.
                 // Head is *not* null due to check.
                 LinkedListNode<T> index = _head!;
-                for (int i = 1; i < _size; i++)
+                for (int i = 0; i < _size; i++)
                 {
                     if (index == item)
                         throw new Exception("Item is already in the list.");
@@ -246,7 +246,7 @@ namespace AppManagerGUI
             index = _head!;
 
             // Iterates through list to find desired index.
-            for (int i = 1; i < indexToFind; i++)
+            for (int i = 0; i < indexToFind; i++)
             {
                 if (index.Next == null)
                 {
@@ -295,8 +295,17 @@ namespace AppManagerGUI
         * Class Functions - Merge Sort Referenced From: https://www.geeksforgeeks.org/merge-sort-for-linked-list/#
         ***************************************************************/
 
+        /// <summary>
+        /// Preforms a sorted merge between two nodes (two linked lists).
+        /// Code modified and referenced from: https://www.geeksforgeeks.org/merge-two-sorted-linked-lists/
+        /// </summary>
+        /// <param name="left">Left node to merge</param>
+        /// <param name="right"></param>
+        /// <returns></returns>
         LinkedListNode<T> SortedMerge(LinkedListNode<T> left, LinkedListNode<T> right)
         {
+            // If either the left or right node is null,
+            // it does not need to merge them both. Thus returning either node.
             if (left == null)
             {
                 return right;
@@ -306,21 +315,33 @@ namespace AppManagerGUI
                 return left;
             }
 
+            // Based on the reference value (for this project, it refers to a LinkedListNode's original Priority)
+            // compares and contrast on how it needs to call recursion.
             LinkedListNode<T> result;
+
+            // If left's value is lower, start recurring over the left list.
             if (left.ReferenceValue <= right.ReferenceValue)
             {
                 result = left;
-                left.Next = SortedMerge(left.Next!, right.Next!);
+                result.Next = SortedMerge(left.Next!, right);
             }
+            // Or if right's value is lower, recur over the right list.
             else
             {
                 result = right;
-                right.Next = SortedMerge(left, right.Next!);
+                result.Next = SortedMerge(left, right.Next!);
             }
 
+            // Descending order from what was originally ascending in priority queue.
             return result;
         }
 
+        /// <summary>
+        /// Gets the middle node of a Linked List.
+        /// Code referenced and modified from: https://www.geeksforgeeks.org/merge-sort-for-linked-list/#
+        /// </summary>
+        /// <param name="node">Head node to be referenced.</param>
+        /// <returns>Middle node.</returns>
         LinkedListNode<T>? GetMiddle(LinkedListNode<T> node)
         {
             if (node == null)

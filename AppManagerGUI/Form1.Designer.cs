@@ -192,7 +192,6 @@ namespace AppManagerGUI
             PriorityQueueViewLabel.Size = new Size(214, 28);
             PriorityQueueViewLabel.TabIndex = 9;
             PriorityQueueViewLabel.Text = "Incomplete Documents";
-            PriorityQueueViewLabel.Click += PriorityQueueViewLabel_Click;
             // 
             // PriorityQueuePriorityLabel
             // 

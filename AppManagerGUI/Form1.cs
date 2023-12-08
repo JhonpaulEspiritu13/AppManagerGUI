@@ -80,14 +80,16 @@ namespace AppManagerGUI
         {
             // Clears LinkedList view.
             LinkedListView.Items.Clear();
-            
-            // Increments through the linked list.
-            LinkedListNode<Document> index = appManager.CompletedDocuments.Head;
+
+            if (appManager.CompletedDocuments.Size() == 0) return;
+            // Increments through the linked list. Cannot be null due to check.
+            LinkedListNode<Document> index = appManager.CompletedDocuments.Head!;
+            // A correctly formulated LinkedList means that the index value won't be null when iterating through itself.
             for (int i = 0; i < appManager.CompletedDocuments.Size(); i++)
             {
-                ListViewItem newListItem = new ListViewItem(new[] { index.Value.FileName, index.Value.FilePath });
+                ListViewItem newListItem = new ListViewItem(new[] { index!.Value.FileName, index.Value.FilePath });
                 LinkedListView.Items.Add(newListItem);
-                index = index.Next;
+                index = index.Next!;
             }
         }
 
@@ -102,7 +104,6 @@ namespace AppManagerGUI
                 appManager.PopDocument();
                 PriorityQueueViewReload();
                 LinkedListViewReload();
-                MessageBox.Show(appManager.CompletedDocuments.Size().ToString());
             }
             // If an exception pops up, display a message box.
             catch (Exception)
@@ -180,21 +181,53 @@ namespace AppManagerGUI
             document.OpenDocument();
         }
 
+        /// <summary>
+        /// Deletes the currently selected item in the Linked List View.
+        /// </summary>
         private void LinkedListDelete_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void LinkedListSort_Click(object sender, EventArgs e)
-        {
-            appManager.MergeSort();
-            MessageBox.Show(appManager.CompletedDocuments.Size().ToString());
+            // If an item is selected, remove that specific item.
+            if (LinkedListView.SelectedItems.Count > 0)
+            {
+                int selectedIndex = LinkedListView.SelectedItems[0].Index;
+                appManager.CompletedDocuments.Remove(appManager.LinkedGetDocument(selectedIndex));
+            }
+            // Else, removes the top of the list.
+            else
+            {
+                try
+                {
+                    appManager.CompletedDocuments.Remove();
+                }
+                catch (LinkedListEmptyException)
+                {
+                    MessageBox.Show("There are no items currently in the Linked List to remove.", "No Items",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
             LinkedListViewReload();
         }
 
-        private void PriorityQueueViewLabel_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Sorts the Linked List of the app manager (currently not working).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LinkedListSort_Click(object sender, EventArgs e)
         {
-
+            // Attempts a Merge Sort and reload.
+            try
+            {
+                appManager.MergeSort();
+                LinkedListViewReload();
+            }
+            // If the linked list is empty, throw up a message box.
+            catch (LinkedListEmptyException)
+            {
+                MessageBox.Show("There are no items currently in the Linked List to sort.", "No Items",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            
         }
 
         /// <summary>
