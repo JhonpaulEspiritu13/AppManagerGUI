@@ -168,7 +168,15 @@ namespace AppManagerGUI
             // Gets index of selected item, then finds it in Priority Queue.
             int selectedIndex = PriorityQueueView.SelectedItems[0].Index;
             Document document = appManager.PriorityGetDocument(selectedIndex);
-            document.OpenDocument();
+            try
+            {
+                document.OpenDocument();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("The opened link is not valid. Please check to ensure the file is still there.", "Invalid File",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
@@ -178,7 +186,15 @@ namespace AppManagerGUI
         {
             int selectedIndex = LinkedListView.SelectedItems[0].Index;
             Document document = appManager.LinkedGetDocument(selectedIndex);
-            document.OpenDocument();
+            try
+            {
+                document.OpenDocument();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("The opened link is not valid. Please check to ensure the file is still there.", "Invalid File",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         /// <summary>
