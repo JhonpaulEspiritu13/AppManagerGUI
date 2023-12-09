@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 namespace AppManagerGUI
 {
     [Serializable]
-    class Document
+    public class Document
     {
         /**************************************************************
         * Class Variables

@@ -137,6 +137,7 @@ namespace AppManagerGUI
                 // Current is *not* null due to check.
                 _current!.Next = item;
                 _current = item;
+                _size++;
 
                 // If there are any nodes connected to the added node, append those nodes to the Linked List as well.
                 index = _current;
@@ -151,10 +152,8 @@ namespace AppManagerGUI
             {
                 _head = item;
                 _current = _head;
+                _size++;
             }
-
-            // Increase size after either if statements.
-            _size++;
         }
 
         /// <summary>
@@ -177,7 +176,7 @@ namespace AppManagerGUI
             // If the Node object two spots ahead is null, make index the current object
             // and null its Next pointer to remove references.
             LinkedListNode<T> index = _head!;
-            for (int i = 1; i < _size; i++)
+            for (int i = 2; i < _size; i++)
             {
                 index = index.Next!;
             }
@@ -344,23 +343,26 @@ namespace AppManagerGUI
         /// <returns>Middle node.</returns>
         LinkedListNode<T>? GetMiddle(LinkedListNode<T> node)
         {
+            // If inserted node is null, return.
             if (node == null)
                 return node;
-            LinkedListNode<T>? fastptr = node.Next;
-            LinkedListNode<T>? slowptr = node;
+            // One is to increment forward, while the other stays back to record index.
+            LinkedListNode<T>? index = node.Next;
+            LinkedListNode<T> middle = node;
 
-            // Move fastptr by two and slow ptr by one
-            // Finally slowptr will point to middle node
-            while (fastptr != null)
+            // Moves until the end of the list, incrementing the index by two
+            // middle is incrementing by one, being the 'slowptr' in order to record the middle.
+            while (index != null)
             {
-                fastptr = fastptr.Next;
-                if (fastptr != null)
+                index = index.Next;
+                if (index != null)
                 {
-                    slowptr = slowptr.Next;
-                    fastptr = fastptr.Next;
+                    // Middle won't be null due to the indexing check null values first.
+                    middle = middle.Next!;
+                    index = index.Next;
                 }
             }
-            return slowptr;
+            return middle;
         }
 
         /// <summary>
@@ -377,7 +379,7 @@ namespace AppManagerGUI
                 return node;
             }
 
-            // Splits the list into two halves by getting the middle first..
+            // Splits the list into two halves by getting the middle first.
             LinkedListNode<T> middle = GetMiddle(node)!;
             LinkedListNode<T> middleNext = middle.Next!;
             middle.Next = null;

@@ -190,14 +190,14 @@ namespace AppManagerGUI
             if (LinkedListView.SelectedItems.Count > 0)
             {
                 int selectedIndex = LinkedListView.SelectedItems[0].Index;
-                appManager.CompletedDocuments.Remove(appManager.LinkedGetDocument(selectedIndex));
+                appManager.Remove(appManager.LinkedGetDocument(selectedIndex));
             }
             // Else, removes the top of the list.
             else
             {
                 try
                 {
-                    appManager.CompletedDocuments.Remove();
+                    appManager.Remove();
                 }
                 catch (LinkedListEmptyException)
                 {

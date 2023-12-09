@@ -33,7 +33,7 @@ using System.Reflection.Metadata;
 
 namespace AppManagerGUI
 {
-    class AppManager
+    public class AppManager
     {
         /**************************************************************
         * Class Variables
@@ -114,6 +114,11 @@ namespace AppManagerGUI
         /// </summary>
         public void SaveManager()
         {
+            if (!Directory.Exists(ManagerPath))
+            {
+                throw new AppManagerInvalidPathException();
+            }
+
             using (StreamWriter sw = new StreamWriter(Path.Combine(appManagerPath, "appManager.json")))
             {
                 sw.WriteLine(SerializeManager());
@@ -136,6 +141,11 @@ namespace AppManagerGUI
         /// <returns></returns>
         public AppManager LoadManager()
         {
+            if (!Directory.Exists(ManagerPath))
+            {
+                throw new AppManagerInvalidPathException();
+            }
+
             string jsonObject;
             using (StreamReader sr = new StreamReader(Path.Combine(appManagerPath, "appManager.json")))
             {
@@ -176,7 +186,8 @@ namespace AppManagerGUI
         /// </summary>
         public void PopAllDocuments()
         {
-            for (int i = 0; i < documentsInQueue.Size(); i++)
+            int currentSize = documentsInQueue.Size();
+            for (int i = 0; i < currentSize; i++)
             {
                 PopDocument();
             }
@@ -205,6 +216,14 @@ namespace AppManagerGUI
         ***************************************************************/
 
         /// <summary>
+        /// Removes the top row document from the list.
+        /// </summary>
+        public void Remove()
+        {
+            documentsInList.Remove();
+        }
+
+        /// <summary>
         /// Removes a specified document item from the list.
         /// </summary>
         /// <param name="item">Item to be removed from the list of completed documents.</param>
@@ -216,7 +235,7 @@ namespace AppManagerGUI
         /// <summary>
         /// Clears all documents from the linked list.
         /// </summary>
-        public void Clear()
+        public void ListClear()
         {
             documentsInList.Clear();
         }
